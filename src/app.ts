@@ -7,9 +7,9 @@ class Api {
     private port: string;
     private routes: Record<string, string>;
 
-    constructor(){
+    constructor() {
        this.app = express();
-       this.port = process.env.PORT || '3000'
+       this.port = process.env.PORT || '8080'
        this.routes = {
         tasks: '/api/tasks'
        }
@@ -21,7 +21,7 @@ class Api {
     loadMiddlewares() {
         this.app.use(express.json())
         this.app.use(express.urlencoded({ extended: false }));
-        this.app.use(morgan('dev'));
+        this.app.use(morgan((process.env.NODE_ENV || 'local')));
     }
 
     loadRoutes() {
