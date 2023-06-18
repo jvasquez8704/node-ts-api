@@ -2,22 +2,48 @@ name: CI Typescript Node.js for ATOM test
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - master
 
 jobs:
   build:
-
-    runs-on: self-hosted
-
-    strategy:
-      matrix:
-        node-version: [14.x]
+    name: Build and deploy
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm install
+      - name: Checkout main
+        uses: actions/checkout@v2
+    
+      - name: Update SHA
+        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/src/_meta
+      
+      - name: Build image
+        run: docker build -t registry.digitalocean.com/test-k8s-container-registry/test-api:$(echo $GITHUB_SHA | head -c7) .
+
+      
+      
+      - name: Instal doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+      
+      - name: Login docker
+        run: doctl registry login --expiry-seconds 600
+      
+      - name: Push image
+        run: docker push registry.digitalocean.com/test-k8s-container-registry/test-api:$(echo $GITHUB_SHA | head -c7)
+        
+        
+      
+      - name: Update deploy file
+        run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/test-k8s-container-registry/test-api:'${TAG}'|' $GITHUB_WORKSPACE/k8s/deployment.yml
+
+      - name: save config cluster
+        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 test-k8s-cluster
+
+      - name: Deploy
+        run: kubectl apply -f $GITHUB_WORKSPACE/k8s/deployment.yml
+      
+
+      - name: Verify deploy
+        run: kubectl rollout status deployment/digital-ocean-deploy-atom       
