@@ -6,7 +6,8 @@ import IRepo from "./repo";
 import { v1 } from 'uuid';
 import FirestoreDB from '../db/firestore';
 import Constants from "../utils/constants";
-
+import { Service } from 'typedi';
+@Service()
 class TaskFirestoreRepo implements IRepo<TaskModel> {
     private MODEL_NAME = Constants.Models.Tasks;
     private db: any;

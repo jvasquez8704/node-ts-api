@@ -21,7 +21,9 @@
     "lodash": "^4.17.21",
     "morgan": "^1.10.0",
     "mysql2": "^3.2.4",
+    "reflect-metadata": "^0.1.13",
     "sequelize": "^6.31.0",
+    "typedi": "^0.10.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

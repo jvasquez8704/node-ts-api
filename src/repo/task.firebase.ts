@@ -4,7 +4,8 @@ import TaskModel from "../models/task.model";
 import IRepo from "./repo";
 import FirebaseDB from '../db/firebase';
 import Constants from "../utils/constants";
-
+import { Service } from 'typedi';
+@Service()
 class TaskFirebaseRepo implements IRepo<TaskModel> {
     private MODEL_NAME = Constants.Models.Tasks;
     private db: any;

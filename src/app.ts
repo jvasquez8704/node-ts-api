@@ -1,18 +1,16 @@
-import express, {Application } from 'express';
+
+import 'reflect-metadata';
+import express, { Application } from 'express';
 import taskRoutes from './routes/task';
 import morgan from 'morgan';
-
+import Constants from './utils/constants';
 class Api {
-    private app: Application;
-    private port: string;
-    private routes: Record<string, string>;
+    constructor(
+        private app:Application = express(),
+        private port: string | number = process.env.PORT || Constants.DefaultPort,
+        private routes:  Record<string, string> = Constants.ConfigRoutes
 
-    constructor() {
-       this.app = express();
-       this.port = process.env.PORT || '3000'
-       this.routes = {
-        tasks: '/api/tasks'
-       }
+    ) {
        // middlewares
        this.loadMiddlewares()
        this.loadRoutes()
@@ -21,7 +19,7 @@ class Api {
     loadMiddlewares() {
         this.app.use(express.json())
         this.app.use(express.urlencoded({ extended: false }));
-        this.app.use(morgan((process.env.NODE_ENV || 'local')));
+        this.app.use(morgan((process.env.NODE_ENV || Constants.DefaultEnv)));
     }
 
     loadRoutes() {
@@ -30,7 +28,7 @@ class Api {
     
     start() {
         this.app.listen(this.port, () => {
-            console.log('server started at port', this.port
+            console.log('server started at port ', this.port
             );
         })
     }

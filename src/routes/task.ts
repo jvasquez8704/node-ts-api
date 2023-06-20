@@ -1,17 +1,17 @@
 import { Router } from "express"
-import { addTask, deleteTask, getTask , getTasks, updateTask } from "../controller/task";
+import Container from 'typedi';
+import TaskController from "../controller/task";
 
 
 
 const taskRoutes = Router();
+const taskController = Container.get(TaskController)
 
-taskRoutes.get('/', getTasks)
-taskRoutes.get('/:id', getTask)
-taskRoutes.post('/', addTask)
-taskRoutes.put('/:id', updateTask)
-taskRoutes.delete('/:id', deleteTask)
-
-
+taskRoutes.get('/', taskController.getTasks)
+taskRoutes.get('/:id', taskController.getTask)
+taskRoutes.post('/', taskController.addTask)
+taskRoutes.put('/:id', taskController.updateTask)
+taskRoutes.delete('/:id', taskController.deleteTask)
 
 
 

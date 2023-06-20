@@ -1,14 +1,15 @@
 import admin from 'firebase-admin';
 import IDB from './idb';
 import path from 'path';
+import Constants from '../utils/constants';
 
 class FirebaseDB implements IDB<typeof admin.database> {
     private instance: any;
     constructor() {
-        const serviceAccount = path.join(__dirname, '/../../atom-lost-firebase-adminsdk-dg3tm-8ce5ff0a4d.json');
+        const serviceAccount = path.join(__dirname, Constants.ServiceAccountFilePath);
         admin.initializeApp({
             credential: admin.credential.cert(serviceAccount),
-            databaseURL: "https://atom-lost-default-rtdb.firebaseio.com"
+            databaseURL: Constants.FireBaseDBUrl
           });
           
         this.instance = admin.database();
