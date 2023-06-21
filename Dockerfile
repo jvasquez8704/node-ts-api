@@ -1,4 +1,4 @@
-FROM node:14.18-alpine3.14
+FROM node:16.20-alpine3.17
 WORKDIR /usr/src/asap
 COPY . /usr/src/asap
 
