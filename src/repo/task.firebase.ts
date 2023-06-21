@@ -5,6 +5,8 @@ import IRepo from "./repo";
 import FirebaseDB from '../db/firebase';
 import Constants from "../utils/constants";
 import { Service } from 'typedi';
+import { HttpStatusCodeError } from '../lib/error';
+import { HttpStatusCode } from '../lib/enums';
 @Service()
 class TaskFirebaseRepo implements IRepo<TaskModel> {
     private MODEL_NAME = Constants.Models.Tasks;
@@ -20,11 +22,10 @@ class TaskFirebaseRepo implements IRepo<TaskModel> {
             if (snapshot.exists()) {
               resolve(snapshot.val() as TaskModel)
             } else {
-              reject({status:404, message:'Task not found'})
+              reject(new HttpStatusCodeError(HttpStatusCode.NotFound, `Task with id ${get(filter,'id')} not found`))
             }
           }).catch((error:any) => {
-            console.error(error);
-            reject({status:500, message: get(error, 'message')})
+            reject(error)
           });
         })
     }
@@ -38,8 +39,7 @@ class TaskFirebaseRepo implements IRepo<TaskModel> {
          } 
          resolve(docs)
        }).catch((error: any) => {
-         console.error(error);
-         reject({status:500, message: get(error, 'message')})
+         reject(error)
        });
      })
     }

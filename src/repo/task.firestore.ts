@@ -7,6 +7,8 @@ import { v1 } from 'uuid';
 import FirestoreDB from '../db/firestore';
 import Constants from "../utils/constants";
 import { Service } from 'typedi';
+import { HttpStatusCodeError } from '../lib/error';
+import { HttpStatusCode } from '../lib/enums';
 @Service()
 class TaskFirestoreRepo implements IRepo<TaskModel> {
     private MODEL_NAME = Constants.Models.Tasks;
@@ -16,11 +18,10 @@ class TaskFirestoreRepo implements IRepo<TaskModel> {
       this.db = fs.getDB();
     }
     async findOne(filter: any): Promise<TaskModel> {
-      const docRef = this.db.collection('tasks').doc(get(filter, 'id'));
+      const docRef = this.db.collection(this.MODEL_NAME).doc(get(filter, 'id'));
       const task = await docRef.get();
       if(!task.exists) {
-          throw new Error(`task with id: ${get(filter, 'id')} not found`)
-      }
+          throw new HttpStatusCodeError(HttpStatusCode.NotFound, `task with id: ${get(filter, 'id')} not found`)      }
       return task.data() as TaskModel
     }
     async fetch(filter?: any): Promise<TaskModel[]> {
@@ -28,7 +29,7 @@ class TaskFirestoreRepo implements IRepo<TaskModel> {
       const tasks = await collectionRef.get();
       let docs: TaskModel[] = [];
       if(tasks.empty) {
-          throw new Error(`no tasks found yet`)
+          throw new HttpStatusCodeError(HttpStatusCode.NotFound, `Task with id ${get(filter,'id')} not found`)
       }
       tasks.forEach((element: any) => {
           docs.push(element.data() as TaskModel );
@@ -44,7 +45,7 @@ class TaskFirestoreRepo implements IRepo<TaskModel> {
     async update(entry: Partial<TaskModel>, filter: any): Promise<void> {
       const docRef = this.db.collection(this.MODEL_NAME).doc(get(filter, 'id'));
       const task = await docRef.get();
-      if(!task.exists){
+      if(!task.exists) {
           throw new Error(`task with id: ${get(filter, 'id')} not found`)
       }
       const updatedTask = {
