@@ -28,6 +28,8 @@ export default (
     err.status = get(err, 'response.status', get(err, 'response.data.status', HttpStatusCode.ServerError));
     // eslint-disable-next-line no-param-reassign
     err.message = get(err, 'response.message', get(err, 'response.data.message', ''));
+     // eslint-disable-next-line no-param-reassign
+     err.errors = get(err, 'response.message', get(err, 'response.data.errors'));
   }
   // eslint-disable-next-line no-param-reassign
   err.status = err.status || 500;
@@ -42,11 +44,12 @@ export default (
     params,
     query,
     headers,
-    status: err.status
+    status: err.status,
+    errors: get(err, 'errors')
   });
   res.status(err.status).json(cleanDeep({
     status: err.status,
     message,
-    errorCodes: get(err, 'errorCodes')
+    errors: get(err, 'errors')
   }));
 };

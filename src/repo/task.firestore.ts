@@ -23,8 +23,7 @@ class TaskFirestoreRepo implements IRepo<TaskModel> {
       }
       return task.data() as TaskModel
     }
-    async fetch(filter: any): Promise<TaskModel[]> {
-      console.log('fetch => filter: ', filter);
+    async fetch(filter?: any): Promise<TaskModel[]> {
       const collectionRef = this.db.collection(this.MODEL_NAME);
       const tasks = await collectionRef.get();
       let docs: TaskModel[] = [];
@@ -42,7 +41,7 @@ class TaskFirestoreRepo implements IRepo<TaskModel> {
         await docRef.set({id,...first(entries)} as any);
         return entries;
     }
-    async update(entry: TaskModel, filter: any): Promise<void> {
+    async update(entry: Partial<TaskModel>, filter: any): Promise<void> {
       const docRef = this.db.collection(this.MODEL_NAME).doc(get(filter, 'id'));
       const task = await docRef.get();
       if(!task.exists){

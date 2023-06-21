@@ -1,4 +1,5 @@
 import { DBProvider } from "../lib/enums";
+import { TaskStatus } from "../models/task.model";
 import TaskFirebaseRepo from "../repo/task.firebase";
 import TaskFirestoreRepo from "../repo/task.firestore";
 
@@ -17,5 +18,6 @@ export default {
     ConfigRepo: {
       [DBProvider.FIREBASE]: TaskFirebaseRepo,
       [DBProvider.FIRESTORE]: TaskFirestoreRepo
-    }
+    },
+    TaskStatuses: [TaskStatus.ToDo, TaskStatus.InProgress, TaskStatus.Done]
   } as const;

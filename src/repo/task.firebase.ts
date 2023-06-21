@@ -20,7 +20,6 @@ class TaskFirebaseRepo implements IRepo<TaskModel> {
             if (snapshot.exists()) {
               resolve(snapshot.val() as TaskModel)
             } else {
-              console.log("No data available");
               reject({status:404, message:'Task not found'})
             }
           }).catch((error:any) => {
@@ -29,8 +28,7 @@ class TaskFirebaseRepo implements IRepo<TaskModel> {
           });
         })
     }
-    async fetch(filter: any): Promise<TaskModel[]> {
-      console.log('fetch: ', filter);
+    async fetch(filter?: any): Promise<TaskModel[]> {
       return new Promise<TaskModel[]>((resolve, reject) => {
         const dbRef = this.db.ref();
         let docs: TaskModel[] = [];
@@ -50,7 +48,7 @@ class TaskFirebaseRepo implements IRepo<TaskModel> {
         await dbRef.push(first(entries));
         return [first(entries)] as TaskModel[]
     }
-    async update(entry: TaskModel, filter: any): Promise<void> {
+    async update(entry: Partial<TaskModel>, filter: any): Promise<void> {
       const dbRef = this.db.ref();
       const taskRef = dbRef.child(this.MODEL_NAME).child(get(filter,'id'))
       const foundTask = await this.findOne({id: get(filter,'id')})

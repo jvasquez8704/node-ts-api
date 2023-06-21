@@ -14,8 +14,8 @@ class TaskController {
 
     getTasks = async (req:Request, res: Response) => {
         try {
-            const tasks  = await this.taskRepo.fetch({})
-            res.status(HttpStatusCode.Success).json({data:tasks , status:'ok', message:'sucess'})
+            const tasks  = await this.taskRepo.fetch()
+            res.status(HttpStatusCode.Success).json(tasks)
         } catch (error: any) {
             errorMiddleware(error, req, res)
         }
@@ -25,7 +25,7 @@ class TaskController {
         try {
             const { id } = req.params;
             const taskFound = await this.taskRepo.findOne({id})
-            res.status(HttpStatusCode.Success).json({data: taskFound, status:'ok', message:'sucess'})
+            res.status(HttpStatusCode.Success).json(taskFound)
         } catch (error: any) {
             errorMiddleware(error, req, res)
         }
@@ -33,8 +33,14 @@ class TaskController {
 
     addTask = async (req: Request, res: Response) => {
         try {
-            const [createdTask] = await this.taskRepo.create([get(req, 'body')] as TaskModel[])
-            res.status(HttpStatusCode.Created).json({data: createdTask, status:'ok', message:'sucess'})
+            const { title, description, status } = get(req, 'body')
+            const taskCreate: TaskModel = {
+                title,
+                description,
+                status
+            }
+            const [createdTask] = await this.taskRepo.create([taskCreate])
+            res.status(HttpStatusCode.Created).json(createdTask)
         } catch (error: any) {
             errorMiddleware(error, req, res)
         }
@@ -53,7 +59,13 @@ class TaskController {
     updateTask = async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            await this.taskRepo.update(get(req, 'body') as TaskModel, {id})
+            const { title, description, status } = get(req, 'body')
+            const taskToUpdate: Partial<TaskModel> = {
+                title,
+                description,
+                status
+            }
+            await this.taskRepo.update(taskToUpdate, {id})
             res.status(HttpStatusCode.NoContent).json()
         } catch (error: any) {
             errorMiddleware(error, req, res);
