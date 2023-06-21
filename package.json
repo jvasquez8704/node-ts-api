@@ -7,7 +7,7 @@
     "start": "nodemon ./src/server.ts",
     "build": "tsc",
     "reload": "tsc --watch",
-    "test": "jest --detectOpenHandles"
+    "test": "jest --forceExit"
   },
   "keywords": [],
   "author": "",
