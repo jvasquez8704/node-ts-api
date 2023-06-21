@@ -33,6 +33,10 @@ class Api {
         })
     }
 
+    getApplication() {
+        return this.app
+    }
+
 }
 
 

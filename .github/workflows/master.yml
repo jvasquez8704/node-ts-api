@@ -13,6 +13,11 @@ jobs:
     steps:
       - name: Checkout main
         uses: actions/checkout@v2
+
+      - name: Run Test
+        run: |
+          npm install 
+          npm test
     
       - name: Update SHA
         run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/src/_meta

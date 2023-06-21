@@ -7,6 +7,7 @@ import Constants from "../utils/constants";
 import { Service } from 'typedi';
 import { HttpStatusCodeError } from '../lib/error';
 import { HttpStatusCode } from '../lib/enums';
+import cleanDeep from 'clean-deep'
 @Service()
 class TaskFirebaseRepo implements IRepo<TaskModel> {
     private MODEL_NAME = Constants.Models.Tasks;
@@ -54,7 +55,7 @@ class TaskFirebaseRepo implements IRepo<TaskModel> {
       const foundTask = await this.findOne({id: get(filter,'id')})
       taskRef.update({
         ...foundTask,
-        ...entry
+        ...cleanDeep(entry)
       });
     }
     async detele(filter: any): Promise<void> {

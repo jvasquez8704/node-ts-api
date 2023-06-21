@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import get from 'lodash/get';
 import TaskFirebaseRepo from "../repo/task.firebase";
-import TaskModel from "../models/task.model";
+import TaskModel, { TaskStatus } from "../models/task.model";
 import errorMiddleware from "../utils/errorMiddleware";
 import { Inject, Service } from "typedi";
 import { HttpStatusCode } from "../lib/enums";
@@ -37,7 +37,7 @@ class TaskController {
             const taskCreate: TaskModel = {
                 title,
                 description,
-                status
+                status: status || TaskStatus.ToDo
             }
             const [createdTask] = await this.taskRepo.create([taskCreate])
             res.status(HttpStatusCode.Created).json(createdTask)
