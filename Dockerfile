@@ -1,6 +1,6 @@
-FROM node:14.18-alpine3.14
-WORKDIR /usr/src/asap
-COPY . /usr/src/asap
+FROM node:14.21-alpine3.16
+WORKDIR /usr/src/atom
+COPY . /usr/src/atom
 
 RUN npm install
 RUN npm run build
